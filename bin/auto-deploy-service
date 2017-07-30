@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+var path = require('path')
+var spawn = require('child_process').spawn
+var program = require('commander')
+program
+  .version('1.0.0')
+  .option('-C, --config [path]', 'option file to start')
+  .parse(process.argv)
+
+if (program.config) {
+  var configFile = path.resolve(program.config)
+  spawn('node', [path.join(__dirname, '../server'), configFile], {
+    detached: true,
+    stdio: ['ignore', 'ignore', 'ignore']
+  })
+}
