@@ -4,9 +4,10 @@ var path = require('path')
 var fs = require('fs')
 var spawn = require('child_process').spawn
 var program = require('commander')
+var package = require('../package')
 
 program
-  .version('1.0.0')
+  .version(package.version)
   .option('-C, --config [path]', 'option file to start')
   .parse(process.argv)
 

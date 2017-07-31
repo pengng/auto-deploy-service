@@ -4,19 +4,20 @@ var bodyParser = require('body-parser')
 var config = require(process.argv[2])
 var Hook = require('./lib/coding')
 var async = require('async')
+var logger = require('express-req-logger')
 
 var repository = config.repository || []
 var hooks = repository.map(function (item) {
   return new Hook(item)
 })
 
+app.use(logger())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
 }))
 
 app.post('/', function (req, res, next) {
-  console.log('success')
   var eventType = getHeaders(req.headers, 'x-coding-event') || req.body.event
   var body = req.body
   var data = {
@@ -32,7 +33,8 @@ app.post('/', function (req, res, next) {
       if (err) {
         return res.status(500).send(err)
       }
-      res.send(result.join(''))
+      console.log(result.join(''))
+      res.end()
     })
   } else {
     res.end()
