@@ -16,7 +16,8 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.post('/', function (req, res, next) {
-  var eventType = req.headers['x-coding-event']
+  console.log('success')
+  var eventType = getHeaders(req.headers, 'x-coding-event') || req.body.event
   var body = req.body
   var data = {
     https_url: body.repository ? body.repository.https_url : '',
@@ -37,6 +38,15 @@ app.post('/', function (req, res, next) {
     res.end()
   }
 })
+
+var getHeaders = function (headers, name) {
+  var reg = new RegExp(name, 'i')
+  for (var key in headers) {
+    if (reg.test(key)) {
+      return headers[key]
+    }
+  }
+}
 
 var port = config.port || 4000
 

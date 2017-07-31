@@ -1,16 +1,36 @@
 #!/usr/bin/env node
+
 var path = require('path')
+var fs = require('fs')
 var spawn = require('child_process').spawn
 var program = require('commander')
+
 program
   .version('1.0.0')
   .option('-C, --config [path]', 'option file to start')
   .parse(process.argv)
 
 if (program.config) {
-  var configFile = path.resolve(program.config)
-  spawn('node', [path.join(__dirname, '../server'), configFile], {
+
+  var logPath = path.join(process.env.HOME, '.auto-deploy-service')
+  try {
+    fs.accessSync(logPath)
+  } catch (err) {
+    fs.mkdirSync(logPath)
+  }
+  var outFD = fs.openSync(path.join(logPath, 'out.log'), 'a')
+  var errFD = fs.openSync(path.join(logPath, 'err.log'), 'a')
+
+  var configFile = ''
+  if (/^\//.test(program.config)) {
+    configFile = program.config
+  } else {
+    configFile = path.resolve(process.cwd(), program.config)
+  }
+
+  var child = spawn('node', [path.join(__dirname, '../server'),configFile], {
     detached: true,
-    stdio: ['ignore', 'ignore', 'ignore']
+    stdio: ['ignore', outFD, errFD]
   })
+  child.unref()
 }
