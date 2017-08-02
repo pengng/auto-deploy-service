@@ -2,13 +2,16 @@
 
 var path = require('path')
 var fs = require('fs')
-var spawn = require('child_process').spawn
+var cp = require('child_process')
+var spawn = cp.spawn
+var exec = cp.exec
 var program = require('commander')
 var package = require('../package')
 
 program
-  .version(package.version)
+  .option('log', 'display the log')
   .option('-C, --config [path]', 'option file to start')
+  .version(package.version)
   .parse(process.argv)
 
 if (program.config) {
@@ -34,4 +37,7 @@ if (program.config) {
     stdio: ['ignore', outFD, errFD]
   })
   child.unref()
+} else if (program.log) {
+  spawn('tail', ['-fn', '100', '/home/peng/.auto-deploy-service/out.log']).stdout.pipe(process.stdout)
+  spawn('tail', ['-fn', '100', '/home/peng/.auto-deploy-service/err.log']).stdout.pipe(process.stderr)
 }

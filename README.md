@@ -9,6 +9,13 @@ npm install -g auto-deploy-service
 auto-deploy-service -C config.json
 ```
 
+### 命令参数
+
+- -V --version 查看当前版本
+- -h --help 查看帮助
+- -C --config [file] 启动配置文件
+- log 显示日志
+
 ### 配置文件参数
 
 | 名称 | 类型 | 必填 | 描述 |
