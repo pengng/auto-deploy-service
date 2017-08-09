@@ -38,6 +38,10 @@ if (program.config) {
   })
   child.unref()
 } else if (program.log) {
-  spawn('tail', ['-fn', '100', '/home/peng/.auto-deploy-service/out.log']).stdout.pipe(process.stdout)
-  spawn('tail', ['-fn', '100', '/home/peng/.auto-deploy-service/err.log']).stdout.pipe(process.stderr)
+  var tailOut = spawn('tail', ['-fn', '100', path.join(process.env.HOME, '.auto-deploy-service/out.log')])
+  tailOut.stdout.pipe(process.stdout)
+  tailOut.stderr.pipe(process.stderr)
+  var tailErr = spawn('tail', ['-fn', '100', path.join(process.env.HOME, '.auto-deploy-service/err.log')])
+  tailErr.stdout.pipe(process.stdout)
+  tailErr.stderr.pipe(process.stderr)
 }
